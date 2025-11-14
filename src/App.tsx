@@ -85,7 +85,7 @@ function App() {
           {/* Buy Button */}
           <div className="flex justify-center">
             <a
-              href="https://pump.fun"
+              href="https://pump.fun/coin/EyDpkQFYzG1AF885rRFdncp4dcQuDTgDbDArfe7Hpump"
               target="_blank"
               rel="noopener noreferrer"
               className="group relative inline-block"
