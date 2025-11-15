@@ -1,3 +1,4 @@
+import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useState } from "react";
 
 function App() {
@@ -6,6 +7,20 @@ function App() {
   const [targetPosition, setTargetPosition] = useState({ x: 50, y: 50 });
   const [timeLeft, setTimeLeft] = useState(30);
   const [highScore, setHighScore] = useState(0);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [copiedStep, setCopiedStep] = useState<number | null>(null);
+
+  const presaleWallet = "AKU2r7aEvNibwNRUqxujiWpNR32cR39gDDE3XcRvg5vP";
+
+  const copyToClipboard = async (text: string, step: number) => {
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopiedStep(step);
+      setTimeout(() => setCopiedStep(null), 2000);
+    } catch (err) {
+      console.error("Failed to copy:", err);
+    }
+  };
 
   // Mini Game: Timer
   useEffect(() => {
@@ -80,27 +95,24 @@ function App() {
           >
             AKU
           </h1>
-        
 
           {/* Buy Button */}
           <div className="flex justify-center">
-            <a
-              href="https://pump.fun/coin/EyDpkQFYzG1AF885rRFdncp4dcQuDTgDbDArfe7Hpump"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="group relative inline-block"
+            <button
+              type="button"
+              onClick={() => setIsModalOpen(true)}
+              className="group relative"
             >
               <div className="absolute inset-0 bg-black translate-x-2 translate-y-2 transition-transform group-hover:translate-x-3 group-hover:translate-y-3"></div>
               <div
                 className="relative border-4 border-black bg-[#FF4D00] px-10 py-5 font-bold text-2xl md:text-3xl text-white transition-transform group-hover:-translate-y-1 group-hover:-translate-x-1 group-active:translate-x-1 group-active:translate-y-1"
                 style={{ fontFamily: "'Archivo Black', sans-serif" }}
               >
-                BUY ON PUMP.FUN 🚀
+                BUY $AKU 🚀
               </div>
-            </a>
+            </button>
           </div>
-        </div>
-
+        </div>{" "}
         {/* Epic Quote Section */}
         <div className="w-full max-w-5xl mb-16">
           <div className="relative border-4 border-black bg-black shadow-[12px_12px_0px_0px_#9D00FF] p-8 md:p-12 -rotate-1 hover:rotate-0 transition-transform duration-300">
@@ -167,7 +179,6 @@ function App() {
             </div>
           </div>
         </div>
-
         {/* Mini Game Section */}
         <div className="w-full max-w-4xl">
           <div className="border-4 border-black bg-white shadow-[12px_12px_0px_0px_#0f0f0f] p-8">
@@ -231,7 +242,11 @@ function App() {
                     fontFamily: "'Syne', sans-serif",
                   }}
                 >
-                  <img src={"/jack.png"} alt="AKU" className="w-full h-full object-cover" />
+                  <img
+                    src={"/jack.png"}
+                    alt="AKU"
+                    className="w-full h-full object-cover"
+                  />
                 </button>
               )}
             </div>
@@ -243,7 +258,6 @@ function App() {
             </div>
           </div>
         </div>
-
         {/* Footer Stats */}
         <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mt-16 max-w-4xl w-full">
           <div className="border-4 border-black bg-[#A3FF00] p-6 shadow-[8px_8px_0px_0px_#0f0f0f] hover:translate-x-1 hover:translate-y-1 hover:shadow-none transition-all">
@@ -276,6 +290,169 @@ function App() {
             </p>
           </div>
         </div>
+        {/* Presale Modal */}
+        <AnimatePresence>
+          {isModalOpen && (
+            <>
+              {/* Backdrop */}
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                onClick={() => setIsModalOpen(false)}
+                className="fixed inset-0 bg-black/80 z-40 backdrop-blur-sm"
+              />
+
+              {/* Modal */}
+              <motion.div
+                initial={{ opacity: 0, scale: 0.8, y: 50 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.8, y: 50 }}
+                transition={{ type: "spring", damping: 25, stiffness: 300 }}
+                className="fixed inset-0 z-50 flex items-center justify-center p-4"
+                onClick={() => setIsModalOpen(false)}
+              >
+                <motion.div
+                  onClick={(e) => e.stopPropagation()}
+                  className="relative w-full max-w-2xl"
+                >
+                  {/* Close button */}
+                  <button
+                    type="button"
+                    onClick={() => setIsModalOpen(false)}
+                    className="absolute -top-4 -right-4 z-10 w-12 h-12 border-4 border-black bg-[#FF4D00] text-white font-black text-2xl shadow-[4px_4px_0px_0px_#0f0f0f] hover:bg-[#ff6a2e] transition-colors"
+                  >
+                    ×
+                  </button>
+
+                  <div className="border-4 border-black bg-white shadow-[12px_12px_0px_0px_#0f0f0f]">
+                    {/* Header */}
+                    <div className="border-b-4 border-black bg-[#A3FF00] p-6">
+                      <h2
+                        className="text-3xl md:text-4xl font-black text-center"
+                        style={{ fontFamily: "'Archivo Black', sans-serif" }}
+                      >
+                        HOW TO BUY $AKU
+                      </h2>
+                    </div>
+
+                    {/* Steps */}
+                    <div className="p-6 md:p-8 space-y-6">
+                      {/* Step 1 */}
+                      <motion.div
+                        initial={{ x: -50, opacity: 0 }}
+                        animate={{ x: 0, opacity: 1 }}
+                        transition={{ delay: 0.1 }}
+                        className="border-4 border-black bg-[#FFFAE5] p-6 shadow-[6px_6px_0px_0px_#0f0f0f]"
+                      >
+                        <div className="flex items-start gap-4">
+                          <div className="shrink-0 w-12 h-12 border-4 border-black bg-[#FF4D00] flex items-center justify-center">
+                            <span
+                              className="text-white font-black text-2xl"
+                              style={{
+                                fontFamily: "'Archivo Black', sans-serif",
+                              }}
+                            >
+                              1
+                            </span>
+                          </div>
+                          <div className="flex-1">
+                            <h3 className="font-black text-xl mb-3">
+                              Copy Presale Wallet
+                            </h3>
+                            <div className="flex gap-2 items-center flex-wrap">
+                              <code className="flex-1 min-w-0 bg-white border-2 border-black px-3 py-2 font-mono text-sm break-all">
+                                {presaleWallet}
+                              </code>
+                              <button
+                                type="button"
+                                onClick={() =>
+                                  copyToClipboard(presaleWallet, 1)
+                                }
+                                className="group relative shrink-0"
+                              >
+                                <div className="absolute inset-0 bg-black translate-x-1 translate-y-1"></div>
+                                <div className="relative border-2 border-black bg-[#9D00FF] px-4 py-2 font-bold text-white transition-transform group-hover:-translate-y-0.5 group-hover:-translate-x-0.5 group-active:translate-x-0.5 group-active:translate-y-0.5">
+                                  {copiedStep === 1 ? "✓ Copied!" : "Copy"}
+                                </div>
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      </motion.div>
+
+                      {/* Step 2 */}
+                      <motion.div
+                        initial={{ x: -50, opacity: 0 }}
+                        animate={{ x: 0, opacity: 1 }}
+                        transition={{ delay: 0.2 }}
+                        className="border-4 border-black bg-[#FFFAE5] p-6 shadow-[6px_6px_0px_0px_#0f0f0f]"
+                      >
+                        <div className="flex items-start gap-4">
+                          <div className="shrink-0 w-12 h-12 border-4 border-black bg-[#FF4D00] flex items-center justify-center">
+                            <span
+                              className="text-white font-black text-2xl"
+                              style={{
+                                fontFamily: "'Archivo Black', sans-serif",
+                              }}
+                            >
+                              2
+                            </span>
+                          </div>
+                          <div className="flex-1">
+                            <h3 className="font-black text-xl mb-2">
+                              Send SOL
+                            </h3>
+                            <p className="text-lg">
+                              Send between{" "}
+                              <span className="font-black text-[#FF4D00]">
+                                0.2 SOL
+                              </span>{" "}
+                              and{" "}
+                              <span className="font-black text-[#FF4D00]">
+                                10 SOL
+                              </span>{" "}
+                              to the wallet above
+                            </p>
+                          </div>
+                        </div>
+                      </motion.div>
+
+                      {/* Step 3 */}
+                      <motion.div
+                        initial={{ x: -50, opacity: 0 }}
+                        animate={{ x: 0, opacity: 1 }}
+                        transition={{ delay: 0.3 }}
+                        className="border-4 border-black bg-[#A3FF00] p-6 shadow-[6px_6px_0px_0px_#0f0f0f]"
+                      >
+                        <div className="flex items-start gap-4">
+                          <div className="shrink-0 w-12 h-12 border-4 border-black bg-[#FF4D00] flex items-center justify-center">
+                            <span
+                              className="text-white font-black text-2xl"
+                              style={{
+                                fontFamily: "'Archivo Black', sans-serif",
+                              }}
+                            >
+                              3
+                            </span>
+                          </div>
+                          <div className="flex-1">
+                            <h3 className="font-black text-xl mb-2">
+                              Get $AKU! 🎉
+                            </h3>
+                            <p className="text-lg font-bold">
+                              Receive your $AKU tokens automatically!
+                            </p>
+                          </div>
+                        </div>
+                      </motion.div>
+                    </div>
+                  </div>
+                </motion.div>
+              </motion.div>
+            </>
+          )}
+        </AnimatePresence>
       </main>
     </div>
   );
